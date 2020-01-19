@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_remid_me/notifications/NotificationManager.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:table_calendar/table_calendar.dart';
 
@@ -10,6 +11,8 @@ class FlutterCalendar extends StatefulWidget {
 }
 
 class _FlutterCalendarState extends State<FlutterCalendar> {
+
+  NotificationManager _notificationManager = NotificationManager();
   CalendarController _controller;
   Map<DateTime,List<dynamic>> _events;
   List<dynamic> _selectedEvents;
@@ -23,6 +26,7 @@ class _FlutterCalendarState extends State<FlutterCalendar> {
     _eventController = TextEditingController();
     _events = {};
     _selectedEvents = [];
+    _notificationManager.initNotifications();
     initPrefs();
   }
 
@@ -111,6 +115,9 @@ class _FlutterCalendarState extends State<FlutterCalendar> {
             ),
             ..._selectedEvents.map((event) => ListTile(
               title: Text(event),
+              leading: Icon(Icons.ac_unit),
+              subtitle: Text('?'),
+
             )),
           ],
         ),
@@ -137,6 +144,7 @@ class _FlutterCalendarState extends State<FlutterCalendar> {
                 setState(() {
                   if(_events[_controller.selectedDay] != null) {
                     _events[_controller.selectedDay].add(_eventController.text);
+                    //Todo create a Notification for the date -1 day
                   }else{
                     _events[_controller.selectedDay] = [_eventController.text];
                   }
