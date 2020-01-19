@@ -144,12 +144,19 @@ class _FlutterCalendarState extends State<FlutterCalendar> {
                 setState(() {
                   if(_events[_controller.selectedDay] != null) {
                     _events[_controller.selectedDay].add(_eventController.text);
-                    //Todo create a Notification for the date -1 day
+
+
+
                   }else{
                     _events[_controller.selectedDay] = [_eventController.text];
                   }
                   prefs.setString("events", json.encode(encodeMap(_events)));
                   _eventController.clear();
+                  //Todo create a Notification for the date -1 day
+                 // _notificationManager.scheduleNotification();
+                  _notificationManager.showNotificationDaily(1, "nj", "ju", 02, 31);
+
+
                   Navigator.pop(context);
                 });
               },
