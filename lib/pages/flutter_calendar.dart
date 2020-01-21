@@ -141,9 +141,42 @@ class _FlutterCalendarState extends State<FlutterCalendar> {
     showDialog(
         context: context,
         builder: (context) => AlertDialog(
-          content: TextField(
-            controller: _eventController,
+          content: Column(
+            children: <Widget>[
+              TextField(
+                decoration: InputDecoration(
+                    labelText: "Enter Notification Title and Info"
+                ),
+
+                controller: _eventController,
+              ),
+              TextField(
+                decoration: InputDecoration(
+                    labelText: "Enter Notification Number Id"
+                ),
+
+              ),
+              TextField(
+                decoration: InputDecoration(
+                    labelText: "Enter Notification Title"
+                ),
+
+              ),
+              TextField(
+                decoration: InputDecoration(
+                    labelText: "Enter NOtification Description"
+                ),
+
+              ),
+              TextField(
+                decoration: InputDecoration(
+                    labelText: "Enter Notification Time"
+                ),
+
+              ),
+            ],
           ),
+
           actions: <Widget>[
 
             FlatButton(
