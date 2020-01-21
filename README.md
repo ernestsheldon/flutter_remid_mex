@@ -1,11 +1,11 @@
-# flutter_remid_me
 
-A new Flutter application.
+<h1> Flutter ToDo Reminder Notification all in one App!</h1>
 
-## Getting Started
 
-This project is a starting point for a Flutter application.
-I will create a Calendar ToDo Notifications all in one App for personal use.
+<p>
+  Creating a App for learning and fun,hopefully with others.
+  
+  </p>
 
 
 A few resources to get you started if this is your first Flutter project:
