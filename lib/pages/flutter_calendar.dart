@@ -65,7 +65,7 @@ class _FlutterCalendarState extends State<FlutterCalendar> {
           children: <Widget>[
             TableCalendar(
               events: _events,
-              initialCalendarFormat: CalendarFormat.week,
+              initialCalendarFormat: CalendarFormat.month,
               calendarStyle: CalendarStyle(
                   canEventMarkersOverflow: true,
                   todayColor: Colors.orange,
@@ -119,6 +119,14 @@ class _FlutterCalendarState extends State<FlutterCalendar> {
               subtitle: Text('?'),
 
             )),
+            SizedBox(width: 22.0,height: 22 ,),
+            Container(
+              color: Colors.orange,
+              width: 355,
+              height: 355,
+              child: Text('hello world',style: TextStyle(color: Colors.black),),
+            ),
+            SizedBox(width: 22.0,),
           ],
         ),
       ),
@@ -137,6 +145,7 @@ class _FlutterCalendarState extends State<FlutterCalendar> {
             controller: _eventController,
           ),
           actions: <Widget>[
+
             FlatButton(
               child: Text("Save"),
               onPressed: (){
@@ -153,8 +162,9 @@ class _FlutterCalendarState extends State<FlutterCalendar> {
                   prefs.setString("events", json.encode(encodeMap(_events)));
                   _eventController.clear();
                   //Todo create a Notification for the date -1 day
-                 // _notificationManager.scheduleNotification();
-                  _notificationManager.showNotificationDaily(1, "nj", "ju", 02, 31);
+                 _notificationManager.scheduleNotification();
+                 //_notificationManager.removeAllReminders();
+                  _notificationManager.showNotificationDaily(1, "nj", "jhjjjju", 11, 53);
 
 
                   Navigator.pop(context);
