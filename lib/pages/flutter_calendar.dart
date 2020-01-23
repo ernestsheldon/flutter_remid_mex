@@ -16,7 +16,18 @@ class _FlutterCalendarState extends State<FlutterCalendar> {
   CalendarController _controller;
   Map<DateTime,List<dynamic>> _events;
   List<dynamic> _selectedEvents;
-  TextEditingController _eventController;
+  TextEditingController _eventController; //calendar marker
+  TextEditingController _notificationIdController;
+  TextEditingController _notificationTitleController;
+  TextEditingController _notificationDescriptionController;
+  TextEditingController _notificationTimeHourController;
+  TextEditingController _notificationTimeMinuteController;
+
+
+
+
+
+
   SharedPreferences prefs;
 
   @override
@@ -24,6 +35,13 @@ class _FlutterCalendarState extends State<FlutterCalendar> {
     super.initState();
     _controller = CalendarController();
     _eventController = TextEditingController();
+
+     _notificationIdController = TextEditingController();
+    _notificationTitleController = TextEditingController();
+     _notificationDescriptionController = TextEditingController();
+     _notificationTimeHourController = TextEditingController();
+     _notificationTimeMinuteController = TextEditingController();
+
     _events = {};
     _selectedEvents = [];
     _notificationManager.initNotifications();
@@ -119,14 +137,7 @@ class _FlutterCalendarState extends State<FlutterCalendar> {
               subtitle: Text('?'),
 
             )),
-            SizedBox(width: 22.0,height: 22 ,),
-            Container(
-              color: Colors.orange,
-              width: 355,
-              height: 355,
-              child: Text('hello world',style: TextStyle(color: Colors.black),),
-            ),
-            SizedBox(width: 22.0,),
+
           ],
         ),
       ),
@@ -141,40 +152,59 @@ class _FlutterCalendarState extends State<FlutterCalendar> {
     showDialog(
         context: context,
         builder: (context) => AlertDialog(
-          content: Column(
-            children: <Widget>[
-              TextField(
-                decoration: InputDecoration(
-                    labelText: "Enter Notification Title and Info"
-                ),
+          content: Container(
+            height: 755,
+            width: 355,
+            child: SingleChildScrollView(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: <Widget>[
+                  TextField(
+                    decoration: InputDecoration(
+                        labelText: "Enter Notification Title and Info"
+                    ),
 
-                controller: _eventController,
-              ),
-              TextField(
-                decoration: InputDecoration(
-                    labelText: "Enter Notification Number Id"
-                ),
+                    controller: _eventController,
+                  ),
+                  TextField(
+                    controller: _notificationIdController,
+                    decoration: InputDecoration(
+                        labelText: "Enter Notification Number Id"
+                    ),
 
-              ),
-              TextField(
-                decoration: InputDecoration(
-                    labelText: "Enter Notification Title"
-                ),
+                  ),
+                  TextField(
+                    controller: _notificationTitleController,
+                    decoration: InputDecoration(
+                        labelText: "Enter Notification Title"
+                    ),
 
-              ),
-              TextField(
-                decoration: InputDecoration(
-                    labelText: "Enter NOtification Description"
-                ),
+                  ),
+                  TextField(
+                    controller: _notificationDescriptionController,
+                    decoration: InputDecoration(
+                        labelText: "Enter NOtification Description"
+                    ),
 
-              ),
-              TextField(
-                decoration: InputDecoration(
-                    labelText: "Enter Notification Time"
-                ),
+                  ),
+                  TextField(
+                    controller: _notificationTimeHourController,
+                    decoration: InputDecoration(
+                        labelText: "Enter Notification Time Hour"
+                    ),
 
+                  ),
+                  TextField(
+                    controller: _notificationTimeMinuteController,
+                    decoration: InputDecoration(
+                        labelText: "Enter Notification Time Minute"
+                    ),
+
+                  ),
+                ],
               ),
-            ],
+            ),
           ),
 
           actions: <Widget>[
@@ -183,7 +213,12 @@ class _FlutterCalendarState extends State<FlutterCalendar> {
               child: Text("Save"),
               onPressed: (){
                 if(_eventController.text.isEmpty) return;
-                setState(() {
+                if(_notificationIdController.text.isEmpty) return;
+                if(_notificationTitleController.text.isEmpty) return;
+                if(_notificationDescriptionController.text.isEmpty) return;
+                if(_notificationTimeHourController.text.isEmpty) return;
+                if(_notificationTimeMinuteController.text.isEmpty) return;
+                setState(()  {
                   if(_events[_controller.selectedDay] != null) {
                     _events[_controller.selectedDay].add(_eventController.text);
 
@@ -194,10 +229,20 @@ class _FlutterCalendarState extends State<FlutterCalendar> {
                   }
                   prefs.setString("events", json.encode(encodeMap(_events)));
                   _eventController.clear();
-                  //Todo create a Notification for the date -1 day
-                 _notificationManager.scheduleNotification();
-                 //_notificationManager.removeAllReminders();
-                  _notificationManager.showNotificationDaily(1, "nj", "jhjjjju", 11, 53);
+
+
+                  //_events.clear();
+                  _notificationManager.scheduleNotification();
+                  //_notificationManager.removeAllReminders();
+                 // _notificationManager.showNotificationDaily(1, _notificationTitleController.text, _notificationDescriptionController.text, int.parse(_notificationTimeHourController.text), int.parse(_notificationTimeMinuteController.text));
+                  _notificationManager.showNotificationDaily(0,"alarm","get up lazy",13,30);
+                  //_notificationManager.removeAllReminders();
+
+
+
+
+
+
 
 
                   Navigator.pop(context);
