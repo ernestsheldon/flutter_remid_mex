@@ -11,11 +11,19 @@ class FlutterCalendar extends StatefulWidget {
 }
 
 class _FlutterCalendarState extends State<FlutterCalendar> {
-
+  //create notification manager
   NotificationManager _notificationManager = NotificationManager();
+
+  //create calendar controller
   CalendarController _controller;
-  Map<DateTime,List<dynamic>> _events;
+
+  //create map list for calendar events
+  Map<DateTime, List<dynamic>> _events;
+
+  //create list of selected events
   List<dynamic> _selectedEvents;
+
+  //create text field controllers
   TextEditingController _eventController; //calendar marker
   TextEditingController _notificationIdController;
   TextEditingController _notificationTitleController;
@@ -23,24 +31,21 @@ class _FlutterCalendarState extends State<FlutterCalendar> {
   TextEditingController _notificationTimeHourController;
   TextEditingController _notificationTimeMinuteController;
 
-
-
-
-
-
+//create shared preference for saving and reading saved events
   SharedPreferences prefs;
 
+  //init vars
   @override
   void initState() {
     super.initState();
     _controller = CalendarController();
     _eventController = TextEditingController();
 
-     _notificationIdController = TextEditingController();
+    _notificationIdController = TextEditingController();
     _notificationTitleController = TextEditingController();
-     _notificationDescriptionController = TextEditingController();
-     _notificationTimeHourController = TextEditingController();
-     _notificationTimeMinuteController = TextEditingController();
+    _notificationDescriptionController = TextEditingController();
+    _notificationTimeHourController = TextEditingController();
+    _notificationTimeMinuteController = TextEditingController();
 
     _events = {};
     _selectedEvents = [];
@@ -48,34 +53,46 @@ class _FlutterCalendarState extends State<FlutterCalendar> {
     initPrefs();
   }
 
+  //dispose on closed memory reallocation
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  //init data
   initPrefs() async {
     prefs = await SharedPreferences.getInstance();
     setState(() {
-      _events = Map<DateTime,List<dynamic>>.from(decodeMap(json.decode(prefs.getString("events") ?? "{}")));
+      _events = Map<DateTime, List<dynamic>>.from(
+          decodeMap(json.decode(prefs.getString("events") ?? "{}")));
     });
   }
 
-  Map<String,dynamic> encodeMap(Map<DateTime,dynamic> map) {
-    Map<String,dynamic> newMap = {};
-    map.forEach((key,value) {
+  //encode data for pref
+  Map<String, dynamic> encodeMap(Map<DateTime, dynamic> map) {
+    Map<String, dynamic> newMap = {};
+    map.forEach((key, value) {
       newMap[key.toString()] = map[key];
     });
     return newMap;
   }
 
-  Map<DateTime,dynamic> decodeMap(Map<String,dynamic> map) {
-    Map<DateTime,dynamic> newMap = {};
-    map.forEach((key,value) {
+  //decode data pref
+  Map<DateTime, dynamic> decodeMap(Map<String, dynamic> map) {
+    Map<DateTime, dynamic> newMap = {};
+    map.forEach((key, value) {
       newMap[DateTime.parse(key)] = map[key];
     });
     return newMap;
   }
 
+  //build ui widget tree
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Flutter Calendar'),
+        title: Text('Reminder Calendar'),
       ),
       body: SingleChildScrollView(
         child: Column(
@@ -132,125 +149,313 @@ class _FlutterCalendarState extends State<FlutterCalendar> {
               calendarController: _controller,
             ),
             ..._selectedEvents.map((event) => ListTile(
-              title: Text(event),
-              leading: Icon(Icons.ac_unit),
-              subtitle: Text('?'),
-
-            )),
-
-          ],
-        ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        child: Icon(Icons.add),
-        onPressed: _showAddDialog,
-      ),
-    );
-  }
-
-  _showAddDialog() {
-    showDialog(
-        context: context,
-        builder: (context) => AlertDialog(
-          content: Container(
-            height: 755,
-            width: 355,
-            child: SingleChildScrollView(
+                  title: Text(event),
+                  leading: Icon(Icons.ac_unit),
+                  subtitle: Text('?'),
+                )),
+            Container(
               child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.center,
                 children: <Widget>[
-                  TextField(
-                    decoration: InputDecoration(
-                        labelText: "Enter Notification Title and Info"
+                  Center(
+                    child: Text(
+                      'Create Reminders by type',
+                      style:
+                          TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
                     ),
-
-                    controller: _eventController,
                   ),
-                  TextField(
-                    controller: _notificationIdController,
-                    decoration: InputDecoration(
-                        labelText: "Enter Notification Number Id"
-                    ),
-
+                  SizedBox(
+                    height: 20.0,
                   ),
-                  TextField(
-                    controller: _notificationTitleController,
-                    decoration: InputDecoration(
-                        labelText: "Enter Notification Title"
+                  SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Row(
+                      children: <Widget>[
+                        Container(
+                          color: Colors.blue,
+                          child: FlatButton(
+                            onPressed: _showAddDailyDialog,
+                            child: Text('daily'),
+                          ),
+                        ),
+                        Container(
+                          color: Colors.yellow,
+                          child: FlatButton(
+                            onPressed: () {},
+                            child: Text('weekly'),
+                          ),
+                        ),
+                        Container(
+                          color: Colors.redAccent,
+                          child: FlatButton(
+                            onPressed: () {},
+                            child: Text('repeating'),
+                          ),
+                        ),
+                        Container(
+                          color: Colors.lightGreenAccent,
+                          child: FlatButton(
+                            onPressed: _showAddScheduleDialog,
+                            child: Text('Schedule'),
+                          ),
+                        ),
+                        Container(
+                          color: Colors.purpleAccent,
+                          child: FlatButton(
+                            onPressed: () {
+                              setState(() {
+                                _events.clear();
+                              });
+                            },
+                            child: Text('Remove All events'),
+                          ),
+                        ),
+                        Container(
+                          color: Colors.black,
+                          child: FlatButton(
+                            onPressed: _notificationManager.removeAllReminders,
+                            child: Text(
+                              'Delete All Reminders',
+                              style: TextStyle(color: Colors.white),
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
-
-                  ),
-                  TextField(
-                    controller: _notificationDescriptionController,
-                    decoration: InputDecoration(
-                        labelText: "Enter NOtification Description"
-                    ),
-
-                  ),
-                  TextField(
-                    controller: _notificationTimeHourController,
-                    decoration: InputDecoration(
-                        labelText: "Enter Notification Time Hour"
-                    ),
-
-                  ),
-                  TextField(
-                    controller: _notificationTimeMinuteController,
-                    decoration: InputDecoration(
-                        labelText: "Enter Notification Time Minute"
-                    ),
-
                   ),
                 ],
               ),
             ),
-          ),
-
-          actions: <Widget>[
-
-            FlatButton(
-              child: Text("Save"),
-              onPressed: (){
-                if(_eventController.text.isEmpty) return;
-                if(_notificationIdController.text.isEmpty) return;
-                if(_notificationTitleController.text.isEmpty) return;
-                if(_notificationDescriptionController.text.isEmpty) return;
-                if(_notificationTimeHourController.text.isEmpty) return;
-                if(_notificationTimeMinuteController.text.isEmpty) return;
-                setState(()  {
-                  if(_events[_controller.selectedDay] != null) {
-                    _events[_controller.selectedDay].add(_eventController.text);
-
-
-
-                  }else{
-                    _events[_controller.selectedDay] = [_eventController.text];
-                  }
-                  prefs.setString("events", json.encode(encodeMap(_events)));
-                  _eventController.clear();
-
-
-                  //_events.clear();
-                  _notificationManager.scheduleNotification();
-                  //_notificationManager.removeAllReminders();
-                 // _notificationManager.showNotificationDaily(1, _notificationTitleController.text, _notificationDescriptionController.text, int.parse(_notificationTimeHourController.text), int.parse(_notificationTimeMinuteController.text));
-                  _notificationManager.showNotificationDaily(0,"alarm","get up lazy",13,30);
-                  //_notificationManager.removeAllReminders();
-
-
-
-
-
-
-
-
-                  Navigator.pop(context);
-                });
-              },
-            )
           ],
-        )
+        ),
+      ),
+      floatingActionButton: FloatingActionButton(
+          child: Icon(Icons.add),
+          onPressed: () {
+            setState(() {
+              _createEventDialog();
+            });
+          }),
     );
+  }
+
+  //create a reminder notification and calendar event on calendar
+  _showAddDailyDialog() {
+    showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+              content: Container(
+                height: 755,
+                width: 355,
+                child: SingleChildScrollView(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: <Widget>[
+
+                      TextField(
+                        controller: _notificationIdController,
+                        decoration: InputDecoration(
+                            labelText: "Enter Notification Number Id"),
+                      ),
+                      TextField(
+                        controller: _notificationTitleController,
+                        decoration: InputDecoration(
+                            labelText: "Enter Notification Title"),
+                      ),
+                      TextField(
+                        controller: _notificationDescriptionController,
+                        decoration: InputDecoration(
+                            labelText: "Enter NOtification Description"),
+                      ),
+                      TextField(
+                        controller: _notificationTimeHourController,
+                        decoration: InputDecoration(
+                            labelText: "Enter Notification Time Hour"),
+                      ),
+                      TextField(
+                        controller: _notificationTimeMinuteController,
+                        decoration: InputDecoration(
+                            labelText: "Enter Notification Time Minute"),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              actions: <Widget>[
+                FlatButton(
+                  child: Text("Save"),
+                  onPressed: () {
+                    if (_eventController.text.isEmpty) return;
+                    if (_notificationIdController.text.isEmpty) return;
+                    if (_notificationTitleController.text.isEmpty) return;
+                    if (_notificationDescriptionController.text.isEmpty) return;
+                    if (_notificationTimeHourController.text.isEmpty) return;
+                    if (_notificationTimeMinuteController.text.isEmpty) return;
+                    setState(() {
+                      if (_events[_controller.selectedDay] != null) {
+                        _events[_controller.selectedDay]
+                            .add(_eventController.text);
+                      } else {
+                        _events[_controller.selectedDay] = [
+                          _eventController.text
+                        ];
+                      }
+                      prefs.setString(
+                          "events", json.encode(encodeMap(_events)));
+                      _eventController.clear();
+
+                      //_events.clear();
+                      //_notificationManager.scheduleNotification();
+                      //_notificationManager.removeAllReminders();
+                      _notificationManager.showNotificationDaily(
+                          1,
+                          _notificationTitleController.text,
+                          _notificationDescriptionController.text,
+                          int.parse(_notificationTimeHourController.text),
+                          int.parse(_notificationTimeMinuteController.text));
+                      // _notificationManager.showNotificationDaily(0,"alarm","get up lazy",13,56);
+                      //_notificationManager.removeAllReminders();
+
+                      Navigator.pop(context);
+                    });
+                  },
+                )
+              ],
+            ));
+  }
+
+  _showAddScheduleDialog() {
+    showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+              content: Container(
+                height: 755,
+                width: 355,
+                child: SingleChildScrollView(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: <Widget>[
+                      TextField(
+                        decoration: InputDecoration(
+                            labelText: "Enter Notification Title and Info"),
+                        controller: _eventController,
+                      ),
+                      TextField(
+                        controller: _notificationIdController,
+                        decoration: InputDecoration(
+                            labelText: "Enter Notification Number Id"),
+                      ),
+                      TextField(
+                        controller: _notificationTitleController,
+                        decoration: InputDecoration(
+                            labelText: "Enter Notification Title"),
+                      ),
+                      TextField(
+                        controller: _notificationDescriptionController,
+                        decoration: InputDecoration(
+                            labelText: "Enter NOtification Description"),
+                      ),
+                      TextField(
+                        controller: _notificationTimeHourController,
+                        decoration: InputDecoration(
+                            labelText: "Enter Notification Time Hour"),
+                      ),
+                      TextField(
+                        controller: _notificationTimeMinuteController,
+                        decoration: InputDecoration(
+                            labelText: "Enter Notification Time Minute"),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              actions: <Widget>[
+                FlatButton(
+                  child: Text("Save"),
+                  onPressed: () {
+                    if (_eventController.text.isEmpty) return;
+                    if (_notificationIdController.text.isEmpty) return;
+                    if (_notificationTitleController.text.isEmpty) return;
+                    if (_notificationDescriptionController.text.isEmpty) return;
+                    if (_notificationTimeHourController.text.isEmpty) return;
+                    if (_notificationTimeMinuteController.text.isEmpty) return;
+                    setState(() {
+                      if (_events[_controller.selectedDay] != null) {
+                        _events[_controller.selectedDay]
+                            .add(_eventController.text);
+                      } else {
+                        _events[_controller.selectedDay] = [
+                          _eventController.text
+                        ];
+                      }
+                      prefs.setString(
+                          "events", json.encode(encodeMap(_events)));
+                      _eventController.clear();
+
+                      //_events.clear();
+                      _notificationManager.scheduleNotification();
+                      //_notificationManager.removeAllReminders();
+                      _notificationManager.showNotificationDaily(
+                          1,
+                          _notificationTitleController.text,
+                          _notificationDescriptionController.text,
+                          int.parse(_notificationTimeHourController.text),
+                          int.parse(_notificationTimeMinuteController.text));
+
+                      Navigator.pop(context);
+                    });
+                  },
+                )
+              ],
+            ));
+  }
+
+  _createEventDialog() {
+    showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+              content: Container(
+                height: 755,
+                width: 355,
+                child: SingleChildScrollView(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: <Widget>[
+                      TextField(
+                        decoration: InputDecoration(
+                            labelText: "Enter Event Title and Info"),
+                        controller: _eventController,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              actions: <Widget>[
+                FlatButton(
+                  child: Text("Save Event"),
+                  onPressed: () {
+                    if (_eventController.text.isEmpty) return;
+
+                    setState(() {
+                      if (_events[_controller.selectedDay] != null) {
+                        _events[_controller.selectedDay]
+                            .add(_eventController.text);
+                      } else {
+                        _events[_controller.selectedDay] = [
+                          _eventController.text
+                        ];
+                      }
+                      prefs.setString(
+                          "events", json.encode(encodeMap(_events)));
+                      _eventController.clear();
+
+                      Navigator.pop(context);
+                    });
+                  },
+                )
+              ],
+            ));
   }
 }
