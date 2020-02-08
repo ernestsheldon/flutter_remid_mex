@@ -128,7 +128,8 @@ class NotificationManager {
     var iOSPlatformChannelSpecifics = IOSNotificationDetails();
     var platformChannelSpecifics = NotificationDetails(
         androidPlatformChannelSpecifics, iOSPlatformChannelSpecifics);
-    await flutterLocalNotificationsPlugin.periodicallyShow(0, 'repeating title',
+    await flutterLocalNotificationsPlugin.periodicallyShow(
+        0, 'Reminder every minute',
         'repeating body', RepeatInterval.EveryMinute, platformChannelSpecifics);
   }
 

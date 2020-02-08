@@ -92,7 +92,17 @@ class _FlutterCalendarState extends State<FlutterCalendar> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Reminder Calendar'),
+        title: Text('Create Event'),
+        actions: <Widget>[
+          IconButton(
+            icon: Icon(Icons.add),
+            onPressed: () {
+              setState(() {
+                _createEventDialog();
+              });
+            },
+          ),
+        ],
       ),
       body: SingleChildScrollView(
         child: Column(
@@ -155,14 +165,14 @@ class _FlutterCalendarState extends State<FlutterCalendar> {
                 )),
             Container(
               child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
                 children: <Widget>[
-                  Center(
-                    child: Text(
-                      'Create Reminders by type',
-                      style:
-                          TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
-                    ),
+                  Text(
+                    'Create Reminder',
+                    style:
+                    TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
                   ),
+
                   SizedBox(
                     height: 20.0,
                   ),
@@ -180,14 +190,15 @@ class _FlutterCalendarState extends State<FlutterCalendar> {
                         Container(
                           color: Colors.yellow,
                           child: FlatButton(
-                            onPressed: () {},
+                            onPressed: _notificationManager
+                                .showWeeklyAtDayAndTime,
                             child: Text('weekly'),
                           ),
                         ),
                         Container(
                           color: Colors.redAccent,
                           child: FlatButton(
-                            onPressed: () {},
+                            onPressed: _notificationManager.repeatNotification,
                             child: Text('repeating'),
                           ),
                         ),
@@ -204,6 +215,7 @@ class _FlutterCalendarState extends State<FlutterCalendar> {
                             onPressed: () {
                               setState(() {
                                 _events.clear();
+                                _eventController.clear();
                               });
                             },
                             child: Text('Remove All events'),
@@ -221,22 +233,19 @@ class _FlutterCalendarState extends State<FlutterCalendar> {
                         ),
                       ],
                     ),
+
+
                   ),
+
                 ],
               ),
             ),
           ],
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-          child: Icon(Icons.add),
-          onPressed: () {
-            setState(() {
-              _createEventDialog();
-            });
-          }),
     );
   }
+
 
   //create a reminder notification and calendar event on calendar
   _showAddDailyDialog() {
@@ -285,28 +294,12 @@ class _FlutterCalendarState extends State<FlutterCalendar> {
                 FlatButton(
                   child: Text("Save"),
                   onPressed: () {
-                    if (_eventController.text.isEmpty) return;
                     if (_notificationIdController.text.isEmpty) return;
                     if (_notificationTitleController.text.isEmpty) return;
                     if (_notificationDescriptionController.text.isEmpty) return;
                     if (_notificationTimeHourController.text.isEmpty) return;
                     if (_notificationTimeMinuteController.text.isEmpty) return;
-                    setState(() {
-                      if (_events[_controller.selectedDay] != null) {
-                        _events[_controller.selectedDay]
-                            .add(_eventController.text);
-                      } else {
-                        _events[_controller.selectedDay] = [
-                          _eventController.text
-                        ];
-                      }
-                      prefs.setString(
-                          "events", json.encode(encodeMap(_events)));
-                      _eventController.clear();
 
-                      //_events.clear();
-                      //_notificationManager.scheduleNotification();
-                      //_notificationManager.removeAllReminders();
                       _notificationManager.showNotificationDaily(
                           1,
                           _notificationTitleController.text,
@@ -317,7 +310,6 @@ class _FlutterCalendarState extends State<FlutterCalendar> {
                       //_notificationManager.removeAllReminders();
 
                       Navigator.pop(context);
-                    });
                   },
                 )
               ],
