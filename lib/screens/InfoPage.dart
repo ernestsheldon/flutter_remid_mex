@@ -19,7 +19,7 @@ class _InfoPageState extends State<InfoPage> {
             ),
             SizedBox(height: 55,),
             Image.asset(
-              "me.jpg",
+              "me.png",
               width: 300,
               height: 100,
             ),
