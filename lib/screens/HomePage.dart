@@ -28,7 +28,7 @@ class _HomePageState extends State<HomePage> {
                 Tab(icon: Icon(Icons.add_box), text: "ToDos"),
               ],
             ),
-            title: Text('Shit Todo V1.0', style: TextStyle(
+            title: Text('AppGravy Todo V1.0', style: TextStyle(
                 fontWeight: FontWeight.w900,
                 backgroundColor: Colors.black
             ),),
