@@ -23,12 +23,15 @@ class _HomePageState extends State<HomePage> {
           appBar: AppBar(
             bottom: TabBar(
               tabs: [
-                Tab(icon: Icon(Icons.home)),
-                Tab(icon: Icon(Icons.calendar_today)),
-                Tab(icon: Icon(Icons.add_box)),
+                Tab(icon: Icon(Icons.home), text: "Home",),
+                Tab(icon: Icon(Icons.calendar_today), text: "Events"),
+                Tab(icon: Icon(Icons.add_box), text: "ToDos"),
               ],
             ),
-            title: Text('Shit Todo'),
+            title: Text('Shit Todo V1.0', style: TextStyle(
+                fontWeight: FontWeight.w900,
+                backgroundColor: Colors.black
+            ),),
           ),
           body: TabBarView(
             children: [

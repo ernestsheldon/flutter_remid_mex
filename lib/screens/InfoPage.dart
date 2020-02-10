@@ -10,25 +10,32 @@ class _InfoPageState extends State<InfoPage> {
   Widget build(BuildContext context) {
     return Center(
       child: Container(
-        child: Column(
+        child: ListView(
           children: <Widget>[
             Image.asset(
               "AppGravyLogo.png",
-              width: 200,
-              height: 100,
+              width: 100,
+              height: 40,
             ),
+            SizedBox(height: 55,),
             Image.asset(
               "me.jpg",
-              width: 200,
-              height: 300,
+              width: 300,
+              height: 100,
             ),
+            SizedBox(height: 25,),
             Container(
-              width: 250,
-              color: Colors.lightGreenAccent,
+
+              width: 350,
+              height: 200,
+              decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(50.0),
+                  color: Colors.lightBlueAccent.shade100),
               child: Center(
-                child: Text("My Personal Todo And Reminger App. \n "
-                    "I will be using this app as an open source learning tool \n "
-                    "I will allow others to contribute to the app and welcome others willing to learn with me creating this app"),
+                child: Text("   My Personal Todo And Reminger App. \n "
+                    "  I will be using this app as an open source learning tool \n "
+                    "  I will allow others to contribute to the app and welcome \n "
+                    "  others willing to learn with me creating this app"),
               ),
             ),
           ],
