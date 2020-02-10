@@ -38,6 +38,7 @@ class _FlutterCalendarState extends State<FlutterCalendar> {
   @override
   void initState() {
     super.initState();
+    initPrefs();
     _controller = CalendarController();
     _eventController = TextEditingController();
 
@@ -50,14 +51,14 @@ class _FlutterCalendarState extends State<FlutterCalendar> {
     _events = {};
     _selectedEvents = [];
     _notificationManager.initNotifications();
-    initPrefs();
+
   }
 
-  //dispose on closed memory reallocation
+
   @override
   void dispose() {
-    _controller.dispose();
     super.dispose();
+    _controller.dispose();
   }
 
   //init data
